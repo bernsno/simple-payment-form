@@ -1,0 +1,67 @@
+<head>
+  <script type="text/javascript" src="//use.typekit.net/byb6wpj.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  <title>newyears</title>
+
+</head>
+
+<body>
+  {{ renderPage }}
+</body>
+
+<template name="payment_form">
+
+  <h4>Thank you for your interest in our event. Please pay for you ticket below.</h4>
+
+  <span class="errors">{{ card_error }}</span>
+  <form action="" method="POST" id="payment-form">
+    <div class="form-row">
+      <input type="text" size="30" autocomplete="off" placeholder="Your Name" name="card-name" id="card-name" />
+    </div>
+    <div class="form-row">
+      <input type="text" size="30" autocomplete="off" placeholder="Your Email" name="card-email" id="card-email" />
+    </div>
+    <div class="form-row">
+      <input type="text" size="30" autocomplete="off" class="card-number" placeholder="Card Number" name="card-number" />
+    </div>
+    <div class="form-row">
+      <input type="text" size="4" autocomplete="off" class="card-cvc" name="card-cvc" placeholder="CVC"/>
+
+      <input type="text" size="2" class="small card-expiry-month" name="card-expiry-month" placeholder="MM" />
+      <input type="text" size="2" class="small card-expiry-year" name="card-expiry-year" placeholder="YY" />
+    </div>
+
+    <section class="charge-amount">
+      I agree to pay: {{ charge_amount }}
+    </section>
+
+    <button type="submit" class="submit-button">Submit Payment</button>
+  </form>
+</template>
+
+<template name="payment_confirmation">
+  <p>Thank you for your payment</p>
+</template>
+
+<template name="admin">
+  <table>
+    <thead>
+      <th>Name</th>
+      <th>Amount</th>
+      <th>Date Charged</th>
+      <th>On Stripe</th>
+      <th>Refund</th>
+    </thead>
+    <tbody>
+      {{#each charges}}
+      <tr>
+        <td>{{name}}</td>
+        <td>{{amount}}</td>
+        <td>1/2/11</td>
+        <td><a href="#">{{ token }}</a></td>
+        <td><a href="#">Refund</a></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</template>

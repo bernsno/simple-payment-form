@@ -1,0 +1,75 @@
+// Type defaults
+
+basefont() {
+  font-family: "adelle", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+}
+
+basefont-bold() {
+  seriffont();
+  font-weight: 700;
+}
+
+altfont(weight=normal) {
+  font-family: "ff-tisa-sans-web-pro", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: weight;
+}
+
+altfont-bold() {
+  sansfont();
+  font-weight: 700;
+}
+
+
+/*  === Font Sizes ===
+    ================================================= */
+
+/* All font sizes should be provided as rems, with a
+ * pixel fallback for older browsers. */
+
+/* Example use: typeset(14) */
+
+typeset(font-size = 16, line-height = auto) {
+  font-size: font-size px;
+  font-size: (font-size / 10) rems;
+  line-height: line-height;
+}
+
+
+// Document Defaults:
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  basefont();
+  typeset(16, 1.8);
+}
+
+
+// Headers
+h1 {
+  typeset(68, 1.0)
+  basefont-bold();
+  margin-bottom:25px;
+}
+h2 {
+  typeset(42, 1.0)
+  basefont-bold();
+  margin-bottom:25px;
+}
+h3 {
+  typeset(26, 1.0)
+  margin-bottom:25px;
+}
+h4 {
+  margin-bottom:25px;
+}
+
+input {
+  altfont(100);
+  typeset(14)
+}
