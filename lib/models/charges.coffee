@@ -1,4 +1,4 @@
-Charges = new Meteor.Collection("charges")
+Charges = new Meteor.Collection('charges')
 
 stripeTokenResponseManager = (status, response) ->
   if response.error
@@ -7,7 +7,21 @@ stripeTokenResponseManager = (status, response) ->
     Session.set('stripe_token', response.id)
     Session.set('card_error', null)
     console.log response
-    Charges.insert({ token: response.id, amount: Session.get('charge_amount') })
+
+    charge = {
+      token: response.id
+    }
+
+    product = Products.findOne({_id: Session.get('product_id')})
+    if product?
+        charge.amount = accounting.formatMoney(product?.product_amount)
+        charge.name = product.product_name
+        charge.product_id = product._id
+        charge.created_by_id = product.user_id
+
+    Charges.insert(
+      charge
+    )
 
 updateChargeWithStripeData = (charge, token)->
   Fiber ->
@@ -23,7 +37,6 @@ updateChargeWithStripeData = (charge, token)->
   # Need to send an email receipt at this point.
 
 
-
 Meteor.methods
  createStripeToken: (data)->
     if Meteor.isClient
@@ -35,6 +48,17 @@ Meteor.methods
         exp_year: data['card-expiry-year'], #"13",
         stripeTokenResponseManager
 
+  ###
+  Test payments in console with the following:
+
+  Meteor.call('createStripeToken', {
+    'card-name': 'Chris Malven',
+    'card-number': '4242424242424242',
+    'card-cvc': '123',
+    'card-expiry-month': '03',
+    'card-expiry-year': '13'
+  });
+  ###
 
   createStripeCharge: (charge)->
     if Meteor.isServer
@@ -46,8 +70,9 @@ Meteor.methods
           return if error
           updateChargeWithStripeData(response, charge.token)
 
-  sendChargeReceipt: (charge)->
-    toAddress = charge.email or 'bernsno@gmail.com'
+  sendChargeReceipt: (charge) ->
+    user = Meteor.users.findOne()
+    toAddress = charge.email or user?.emails[0].address
     Email.send
       from: 'bernsno@gmail.com'
       to: toAddress
@@ -55,3 +80,12 @@ Meteor.methods
       html: "<p>Thanks for signing up for our awesome thing. This email is confirming that your card will be charged #{charge.amount}.</p>"
 
     Charges.update({ _id: charge._id}, {$set: {receipt_sent: true}})
+
+  updateStripeSettings: (settings_data) ->
+    if not this.userId
+      throw new Meteor.Error(403, 'You must be logged in to set Stripe settings')
+
+    Meteor.users.update(
+      {_id: this.userId},
+      {$set: {'stripe_settings': settings_data}}
+    )

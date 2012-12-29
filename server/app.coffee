@@ -1,14 +1,23 @@
-Stripe = StripeAPI('sk_test_dD9AuSRT9AeuDv489WI2ZFzu')
-
+Stripe = null
 
 Meteor.publish 'charges', ->
-  Charges.find()
+  Charges.find({created_by_id: this.userId})
+
+Meteor.publish 'products', ->
+  Products.find()
+
+Meteor.publish 'directory', ->
+  return if not this.userId
+  users = Meteor.users.find({_id: this.userId}, {fields: {emails: 1, profile: 1, name: 1, stripe_settings: 1}})
+  user = users.fetch()[0]
+  Stripe = StripeAPI(user.stripe_settings?.stripe_secret_key)
+  return users
 
 Charges.find().observe
-  added: (charge)->
+  added: (charge) ->
     if charge.token and not charge.stripe_charge_id?
       Meteor.call('createStripeCharge', charge)
-  changed: (charge, index, oldCharge)->
+  changed: (charge, index, oldCharge) ->
     if charge.stripe_charge_id? and not charge.receipt_sent?
       Meteor.call('sendChargeReceipt', charge)
 

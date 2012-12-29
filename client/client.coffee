@@ -1,23 +1,36 @@
 Meteor.startup ->
-  Stripe.setPublishableKey('pk_test_Pi7dtNNbAP2Wc6lDcoA8fFtY');
-
   Session.set('stripe_token', null)
-  Session.set('charge_amount', 2000)
-
 
 Meteor.Router.add
   '': ->
+    if Meteor.userId()
+      return 'product_list'
+    else
+      return 'signup'
+
+  '/payment/:id': (id) ->
+    Session.set('product_id', id)
     return 'payment_form'
 
   '/confirmation': ->
     return 'payment_confirmation'
 
   '/admin': ->
-    return 'admin'
+    if Meteor.userId()
+      return 'admin'
+    else
+      return 'signup'
 
 
-Meteor.autosubscribe ()->
+Meteor.autosubscribe ->
   Meteor.subscribe('charges')
+  Meteor.subscribe('products')
+  Meteor.subscribe('directory')
+
+Meteor.autorun ->
+  # Update the Stripe publishable key whenever the signed in user changes
+  user = Meteor.users.findOne()
+  Stripe.setPublishableKey(user?.stripe_settings?.stripe_publishable_key)
 
 
 Charges.find().observe
