@@ -1,0 +1,1 @@
+Stripe = StripeAPI(process.env.STRIPE_PRIVATE_KEY)

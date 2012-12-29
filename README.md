@@ -1,20 +1,22 @@
-# Welcome to Meteor Payment Form
+# Meteor Payment Form
 
-This is a simple implementation of a payment form using the Stripe API and meteor.
+This is a simple payment and sign up form built on [Meteor](http://docs.meteor.com). It uses:
+
+* [Stripe](https://stripe.com/) for payments
+* [Coffeescript](http://coffeescript.org)
+* [Reactive Router](https://github.com/tmeasday/meteor-router)
+* [Stripe-meteor](https://github.com/appleifreak/stripe-meteor)
+
+App requirements:
+
+* Node
+* npm
+* Meteor
+* [Meteorite](https://github.com/oortcloud/meteorite)
+* Stripe account
 
 
-# To be implemented:
+To setup:
 
-## General
-* Store Stripe API config somewhere
-
-
-## Payment Form (Iteration 1)
-* Dev/Admin? can easily setup cost for purchase
-* User can pay a set price for something.
-  * User enters CC deets (including their name)
-  * User submits the form
-  * charge created at this point
-  * customer/charge information stored in db
-  * If successful User sees a nice thank you message (install routing)
-* Admin can see charges/user information
+1. Clone the git repo
+2. Add your stripe API keys to environment.coffee in server and client folders.

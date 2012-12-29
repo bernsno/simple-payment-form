@@ -1,0 +1,2 @@
+defaults =
+  stripePublishableKey: "YOUR STRIPE PUBLISHABLE KEY"

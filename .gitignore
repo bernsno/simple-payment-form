@@ -1,1 +1,4 @@
 .DS_Store
+
+client/lib/environment.coffee
+server/lib/environment.coffee

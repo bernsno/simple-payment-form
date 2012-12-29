@@ -1,5 +1,5 @@
 Meteor.startup ->
-  Stripe.setPublishableKey('pk_test_Pi7dtNNbAP2Wc6lDcoA8fFtY');
+  Stripe.setPublishableKey(defaults.stripePublishableKey);
 
   Session.set('stripe_token', null)
   Session.set('charge_amount', 2000)
