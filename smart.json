@@ -1,6 +1,7 @@
 {
   "packages": {
     "stripe": {},
-    "router": {}
+    "router": {},
+    "accounting": {}
   }
 }
