@@ -68,7 +68,7 @@ Meteor.methods
       Stripe = StripeAPI(user.stripe_settings?.stripe_secret_key)
 
       Stripe.charges.create
-        amount: charge.amount * 100
+        amount: charge.amount
         currency: 'USD'
         card: charge.token,
         (error, response) ->

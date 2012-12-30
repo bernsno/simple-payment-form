@@ -16,6 +16,12 @@ Template.admin.receipt_from_email = ->
 Template.admin.products = ->
   return Products.find()
 
+Template.admin.product_amount = ->
+  return accounting.formatMoney(this.product_amount / 100)
+
+Template.admin.amount = ->
+  return accounting.formatMoney(this.amount / 100)
+
 Template.admin.events
   'click .save-stripe-details-btn': (evt) ->
     formData = $(evt.target).closest('form').serializeJSON()

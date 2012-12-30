@@ -1,6 +1,6 @@
 Template.payment_form.charge_amount = ->
   product = Products.findOne({_id: Session.get('product_id')})
-  return accounting.formatMoney(product?.product_amount)
+  return accounting.formatMoney(product?.product_amount / 100)
 
 Template.payment_form.card_error = ->
   Session.get('card_error') or ''

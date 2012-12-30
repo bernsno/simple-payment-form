@@ -5,15 +5,16 @@ Meteor.methods
     if not this.userId
       throw new Meteor.Error(403, 'You must be logged in to create a product')
 
-    # Should add validation for form fields
+    # TODO: Should add validation for form fields
+    
+    if Meteor.isServer
+      data = formData
+      data.user_id = this.userId
+      data.product_amount = accounting.toFixed(formData.product_amount * 100, 0) 
 
-    data = formData
-    data.user_id = this.userId
-    data.product_amount = accounting.toFixed(formData.product_amount, 2)
-
-    Products.insert(
-      data
-    )
+      Products.insert(
+        data
+      )
 
   deleteProduct: (product_id) ->
     if not this.userId
