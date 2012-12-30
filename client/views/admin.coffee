@@ -14,7 +14,8 @@ Template.admin.receipt_from_email = ->
   return user?.stripe_settings?.receipt_from_email
 
 Template.admin.products = ->
-  return Products.find()
+  # Return only products created by current user
+  return Products.find({user_id: Meteor.userId()})
 
 Template.admin.product_amount = ->
   return accounting.formatMoney(this.product_amount / 100)
