@@ -23,3 +23,9 @@ Meteor.methods
     Products.remove(
       {_id: product_id, user_id: this.userId}
     )
+
+  getPublishableKeyByProductId: (product_id) ->
+    product = Products.findOne({_id: product_id})
+    user = Meteor.users.findOne({_id: product?.user_id})
+    key = user?.stripe_settings?.stripe_publishable_key
+    return key

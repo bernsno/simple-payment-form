@@ -10,7 +10,10 @@ Meteor.Router.add
 
   '/payment/:id': (id) ->
     Session.set('product_id', id)
-    return 'payment_form'
+    if Meteor.userId()
+      return 'payment_form'
+    else
+      return 'signup'
 
   '/confirmation': ->
     return 'payment_confirmation'
@@ -28,9 +31,12 @@ Meteor.autosubscribe ->
   Meteor.subscribe('directory')
 
 Meteor.autorun ->
-  # Update the Stripe publishable key whenever the signed in user changes
-  user = Meteor.users.findOne()
-  Stripe.setPublishableKey(user?.stripe_settings?.stripe_publishable_key)
+  # Update the Stripe publishable key whenever the product changes
+  product_id = Session.get('product_id')
+  return if not product_id
+  Meteor.call 'getPublishableKeyByProductId', product_id, (error, result) ->
+    key = result
+    Stripe.setPublishableKey(key)
 
 
 Charges.find().observe
