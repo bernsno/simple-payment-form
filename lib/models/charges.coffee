@@ -14,7 +14,7 @@ stripeTokenResponseManager = (status, response) ->
 
     product = Products.findOne({_id: Session.get('product_id')})
     if product?
-        charge.amount = accounting.formatMoney(product?.product_amount)
+        charge.amount = product.product_amount
         charge.name = product.product_name
         charge.product_id = product._id
         charge.created_by_id = product.user_id
@@ -23,7 +23,7 @@ stripeTokenResponseManager = (status, response) ->
       charge
     )
 
-updateChargeWithStripeData = (charge, token)->
+updateChargeWithStripeData = (charge, token) ->
   Fiber ->
       Charges.update(
         {token: token},
@@ -38,7 +38,7 @@ updateChargeWithStripeData = (charge, token)->
 
 
 Meteor.methods
- createStripeToken: (data)->
+ createStripeToken: (data) ->
     if Meteor.isClient
       Stripe.createToken
         name: data['card-name']
@@ -52,7 +52,7 @@ Meteor.methods
   Test payments in console with the following:
 
   Meteor.call('createStripeToken', {
-    'card-name': 'Chris Malven',
+    'card-name': 'Jonathan Doe',
     'card-number': '4242424242424242',
     'card-cvc': '123',
     'card-expiry-month': '03',
@@ -62,8 +62,13 @@ Meteor.methods
 
   createStripeCharge: (charge)->
     if Meteor.isServer
+      users = Meteor.users.find({_id: charge.created_by_id}, {fields: {stripe_settings: 1}})
+      return if not users.count()
+      user = users.fetch()[0]
+      Stripe = StripeAPI(user.stripe_settings?.stripe_secret_key)
+
       Stripe.charges.create
-        amount: charge.amount
+        amount: charge.amount * 100
         currency: 'USD'
         card: charge.token,
         (error, response) ->

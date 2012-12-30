@@ -3,7 +3,7 @@ Template.payment_form.charge_amount = ->
   return accounting.formatMoney(product?.product_amount)
 
 Template.payment_form.card_error = ->
-  Session.get('card_error')
+  Session.get('card_error') or ''
 
 
 Template.payment_form.events =

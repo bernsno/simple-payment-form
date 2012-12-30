@@ -16,8 +16,9 @@
 
   <h4>Thank you for your interest in our event. Please pay for you ticket below.</h4>
 
-  <span class="errors">{{ card_error }}</span>
-  <form action="" method="POST" id="payment-form">
+  <p class="errors">{{ card_error }}</p>
+
+  <form action="" id="payment-form">
     <div class="form-row">
       <input type="text" size="30" autocomplete="off" placeholder="Your Name" name="card-name" id="card-name">
     </div>
@@ -38,7 +39,7 @@
       I agree to pay: {{ charge_amount }}
     </section>
 
-    <button type="submit" class="submit-button">Submit Payment</button>
+    <button type="button" class="submit-button">Submit Payment</button>
   </form>
 </template>
 
@@ -116,7 +117,7 @@
       {{#each charges}}
       <tr>
         <td>{{name}}</td>
-        <td>{{amount}}</td>
+        <td>${{amount}}</td>
         <td>1/2/11</td>
         <td><a href="#">{{ token }}</a></td>
         <td><a href="#">Refund</a></td>

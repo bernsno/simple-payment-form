@@ -5,9 +5,7 @@ Meteor.methods
     if not this.userId
       throw new Meteor.Error(403, 'You must be logged in to create a product')
 
-    # Perform validation on options
-    if not formData.product_name.length or formData.product_amount.length or formData.product_quantity.length
-      throw new Meteor.Error(400, 'You missed some things!')
+    # Should add validation for form fields
 
     data = formData
     data.user_id = this.userId
