@@ -129,6 +129,10 @@
 
 <template name="product_list">
   <h4>Product List</h4>
+
+  {{#each products}}
+    <a href="/payment/{{_id}}">{{product_name}}</a>
+  {{/each}}
 </template>
 
 <template name="signup">
