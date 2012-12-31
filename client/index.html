@@ -14,6 +14,12 @@
 
 <template name="payment_form">
 
+  {{#if current_user_is_creator}}
+    {{#with product}}
+    <p>You created this product. <a href="mailto:?subject=Now%20Available%20for Purchase:%20{{product_name}}&body=Your%20Message%20Here:%0D%0A%0D%0Ahttp%3A%2F%2Fstripe-payments.meteor.com%2Fpayments%2F{{_id}}">Email a Link to this Page</a></p>
+    {{/with}}
+  {{/if}}
+
   <h4>Thank you for your interest in our event. Please enter your credit card details below.</h4>
 
   <p class="errors">{{ card_error }}</p>
