@@ -1,28 +1,32 @@
 Meteor.startup ->
   Session.set('stripe_token', null)
 
-Meteor.Router.add
-  '': ->
-    if Meteor.userId()
-      return 'product_list'
+
+Meteor.Router.filters
+  'checkLoggedIn': (page) ->
+    if Meteor.loggingIn()
+      return 'loading'
+    else if Meteor.user()
+      return page
     else
       return 'signup'
 
+Meteor.Router.add
+  '': ->
+    return 'product_list'
+
   '/payment/:id': (id) ->
     Session.set('product_id', id)
-    if Meteor.userId()
-      return 'payment_form'
-    else
-      return 'signup'
+    return 'payment_form'
 
   '/confirmation': ->
     return 'payment_confirmation'
 
   '/admin': ->
-    if Meteor.userId()
-      return 'admin'
-    else
-      return 'signup'
+    return 'admin'
+
+
+Meteor.Router.filter('checkLoggedIn')
 
 
 Meteor.autosubscribe ->
