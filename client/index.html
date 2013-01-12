@@ -1,50 +1,117 @@
 <head>
   <script type="text/javascript" src="//use.typekit.net/byb6wpj.js"></script>
   <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-  <title>newyears</title>
-
+  <title>Meteor Stripe Payments</title>
 </head>
 
 <body>
-  {{ renderPage }}
+  {{loginButtons}}
+  <a href="/admin"></a>
+  <section class="container">
+    {{ renderPage }}
+  </section>
 </body>
 
 <template name="payment_form">
 
-  <h4>Thank you for your interest in our event. Please pay for you ticket below.</h4>
+  {{#if current_user_is_creator}}
+    {{#with product}}
+    <p>You created this product. <a href="mailto:?subject=Now%20Available%20for Purchase:%20{{product_name}}&body=Your%20Message%20Here:%0D%0A%0D%0Ahttp%3A%2F%2Fstripe-payments.meteor.com%2Fpayments%2F{{_id}}">Email a Link to this Page</a></p>
+    {{/with}}
+  {{/if}}
 
-  <span class="errors">{{ card_error }}</span>
-  <form action="" method="POST" id="payment-form">
+  <h4>Thank you for your interest in our event. Please enter your credit card details below.</h4>
+
+  <p class="errors">{{ card_error }}</p>
+
+  <form action="" id="payment-form">
     <div class="form-row">
-      <input type="text" size="30" autocomplete="off" placeholder="Your Name" name="card-name" id="card-name" />
+      <input type="text" size="30" autocomplete="off" placeholder="Your Name" name="card-name" id="card-name">
     </div>
     <div class="form-row">
-      <input type="text" size="30" autocomplete="off" placeholder="Your Email" name="card-email" id="card-email" />
+      <input type="text" size="30" autocomplete="off" placeholder="Your Email" name="card-email" id="card-email">
     </div>
     <div class="form-row">
-      <input type="text" size="30" autocomplete="off" class="card-number" placeholder="Card Number" name="card-number" />
+      <input type="text" size="30" autocomplete="off" class="card-number" placeholder="Card Number" name="card-number">
     </div>
     <div class="form-row">
       <input type="text" size="4" autocomplete="off" class="card-cvc" name="card-cvc" placeholder="CVC"/>
 
-      <input type="text" size="2" class="small card-expiry-month" name="card-expiry-month" placeholder="MM" />
-      <input type="text" size="2" class="small card-expiry-year" name="card-expiry-year" placeholder="YY" />
+      <input type="text" size="2" class="small card-expiry-month" name="card-expiry-month" placeholder="MM">
+      <input type="text" size="2" class="small card-expiry-year" name="card-expiry-year" placeholder="YY">
     </div>
 
     <section class="charge-amount">
       I agree to pay: {{ charge_amount }}
     </section>
 
-    <button type="submit" class="submit-button">Submit Payment</button>
+    <button type="button" class="submit-button">Submit Payment</button>
   </form>
 </template>
 
 <template name="payment_confirmation">
-  <p>Thank you for your payment</p>
+  <p>Thank you for your payment! You should receive an email receipt shortly.</p>
 </template>
 
 <template name="admin">
-  <table>
+
+  <h3>Your Stripe account (needed to make charges):</h3>
+  <form class="form-horizontal" action="">
+    <div class="control-group">
+      <label class="control-label" for="stripe_secret_key">Stripe Secret Key:</label>
+      <div class="controls">  
+        <input type="text" name="stripe_secret_key" placeholder="e.g. sk_test_dD9AuSRT9WxbDv489WI2ZFzu" value="{{ stripe_secret_key }}">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="stripe_publishable_key">Stripe Publishable Key:</label>
+      <div class="controls">  
+        <input type="text" name="stripe_publishable_key" placeholder="e.g. pk_test_Pi7dtNNbB3sWc6lDcoA8fFtY" value="{{ stripe_publishable_key }}">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="receipt_from_email">Receipt From Email:</label>
+      <div class="controls">  
+        <input type="text" name="receipt_from_email" placeholder="e.g. johndoe@gmail.com" value="{{ receipt_from_email }}">
+      </div>
+    </div>
+
+    <button type="button" class="save-stripe-details-btn btn btn-info">Save Stripe Details</button>
+  </form>
+
+  <h3>Products:</h3>
+  <table class="table">
+    <thead>
+      <th>Name</th>
+      <th>Amount</th>
+      <th>Quantity</th>
+      <th></th>
+      <th></th>
+    </thead>
+    <tbody>
+      {{#each products}}
+      <tr>
+        <td>{{ product_name }}</td>
+        <td>{{ product_amount }}</td>
+        <td>{{ product_quantity }}</td>
+        <td><a class="delete-product-btn btn btn-danger" href="#"><i class="icon-remove"></i></a></td>
+        <td><a href="/payment/{{ _id }}" target="_blank">Payment Link</a>
+      </tr>
+      {{/each}}
+      <tr>
+        <form action="">
+          <td><input type="text" name="product_name" placeholder="Raffle Ticket"></td>
+          <td><input type="text" name="product_amount" placeholder="49.95"></td>
+          <td><input type="text" name="product_quantity" placeholder="50"></td>
+          <td colspan="2"><a class="add-product-btn btn btn-success" href="#"><i class="icon-plus"></i></a></td>
+        </form>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h3>Charge History:</h3>
+
+  <table class="table">
     <thead>
       <th>Name</th>
       <th>Amount</th>
@@ -64,4 +131,16 @@
       {{/each}}
     </tbody>
   </table>
+</template>
+
+<template name="product_list">
+  <h4>Product List</h4>
+
+  {{#each products}}
+    <a href="/payment/{{_id}}">{{product_name}}</a>
+  {{/each}}
+</template>
+
+<template name="signup">
+  <h4>Please sign up for an account (or sign into your existing account) to get started.</h4>
 </template>
